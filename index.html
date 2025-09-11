@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>الأندآل ، في عين بعض جدع ـآن</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: radial-gradient(circle at center, #0a0a0f, #000 85%);
+  font-family: 'Cairo', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#snowCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.neon-text {
+  font-size: 80px; /* أكبر حجم */
+  font-weight: 700; /* خط سميك */
+  text-align: center;
+  line-height: 1.4;
+  background: linear-gradient(90deg, #fff, #aaa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow:
+    0 0 10px rgba(255,255,255,0.9),
+    0 0 20px rgba(255,255,255,0.7),
+    0 0 30px rgba(200,200,255,0.6),
+    0 0 40px rgba(150,150,255,0.5);
+}
+</style>
+</head>
+<body>
+
+<canvas id="snowCanvas"></canvas>
+
+<div class="neon-text">
+  آلضلمة الي فـ عالمنآ<br>
+  قادرة تبلع اي نـور .
+</div>
+
+<script>
+const canvas = document.getElementById('snowCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const flakesCount = 120;
+let flakes = [];
+
+for (let i = 0; i < flakesCount; i++) {
+  flakes.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    radius: Math.random() * 3 + 1,
+    speed: Math.random() * 1 + 0.5
+  });
+}
+
+function drawSnow() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "white";
+  ctx.beginPath();
+  for (let f of flakes) {
+    ctx.moveTo(f.x, f.y);
+    ctx.arc(f.x, f.y, f.radius, 0, Math.PI*2);
+  }
+  ctx.fill();
+  moveSnow();
+  requestAnimationFrame(drawSnow);
+}
+
+function moveSnow() {
+  for (let f of flakes) {
+    f.y += f.speed;
+    f.x += Math.sin(f.y * 0.01) * 0.5;
+    if (f.y > canvas.height) {
+      f.y = -f.radius;
+      f.x = Math.random() * canvas.width;
+    }
+  }
+}
+
+drawSnow();
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+</script>
+
+</body>
+</html>
