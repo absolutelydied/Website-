@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>موقع الانفجارات الدائري بالدم الواقعي</title>
+<title>Abdo</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
 <style>
 body {
@@ -72,7 +72,7 @@ body {
 </div>
 
 <audio id="explosionSound">
-  <source src="https://www.soundjay.com/explosion/sounds/explosion-02.mp3" type="audio/mpeg">
+  <source src="https://www.soundjay.com/explosion/sounds/explosion-03.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -144,9 +144,9 @@ let currentExplosion=0;
 // دالة إنشاء قطرات الدم
 function createBlood(){
   const drops=[];
-  for(let i=0;i<60;i++){
+  for(let i=0;i<80;i++){
     drops.push({
-      x: Math.random()*100, // البداية من الركن الأيسر السفلي
+      x: Math.random()*100,
       y: canvas.height - Math.random()*50,
       radius: Math.random()*8+4,
       vx: Math.random()*4+1,
@@ -167,20 +167,21 @@ function drawBlood(drops){
   }
 }
 
-function drawBloodOnText(textDrops){
+function drawBloodOnText(drops){
   const rect = neonText.getBoundingClientRect();
-  bctx.fillStyle='rgba(139,0,0,0.5)';
-  textDrops.forEach(td=>{
+  bctx.fillStyle='rgba(139,0,0,0.7)';
+  drops.forEach(d=>{
     const tx = rect.left + Math.random()*rect.width;
     const ty = rect.top + Math.random()*rect.height;
     bctx.beginPath();
-    bctx.arc(tx,ty,td.radius,0,Math.PI*2);
+    bctx.arc(tx,ty,d.radius,0,Math.PI*2);
     bctx.fill();
   });
 }
 
 neonText.addEventListener('click',()=>{
   explosionSound.currentTime=0;
+  explosionSound.volume=1;
   explosionSound.play();
   document.body.style.background="#000";
   neonText.style.transition="transform 0.5s ease, opacity 0.5s ease";
@@ -188,7 +189,6 @@ neonText.addEventListener('click',()=>{
   neonText.style.transform=`translate(${Math.random()*800-400}px,${Math.random()*400-200}px) rotate(${Math.random()*360-180}deg)`;
   for(let f of flakes){f.dx=(Math.random()-0.5)*15;f.dy=(Math.random()-0.5)*15;}
 
-  // انفجار الدم على الانفجار الثالث
   if(currentExplosion===2){
     let drops=createBlood();
     let bloodFrame=0;
@@ -197,8 +197,11 @@ neonText.addEventListener('click',()=>{
       for(let d of drops){d.x+=d.vx; d.y+=d.vy; d.alpha-=0.02;}
       drawBlood(drops);
       drawBloodOnText(drops);
-      if(bloodFrame<50){ requestAnimationFrame(animateBlood);}
-      else{ bctx.clearRect(0,0,bloodCanvas.width,bloodCanvas.height);}
+      if(bloodFrame<125){ // تقريبًا 2.5 ثانية عند 60fps
+        requestAnimationFrame(animateBlood);
+      } else{
+        bctx.clearRect(0,0,bloodCanvas.width,bloodCanvas.height);
+      }
     }
     animateBlood();
   }
@@ -211,7 +214,7 @@ neonText.addEventListener('click',()=>{
     neonText.textContent=texts[currentExplosion];
     currentExplosion++;
     if(currentExplosion>=texts.length) currentExplosion=0;
-  },4000);
+  },2500); // مدة الانفجار 2.5 ثانية
 });
 </script>
 </body>
