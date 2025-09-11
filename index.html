@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>Abdo</title>
+<title>الانفجارات وامتصاص الضوء</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
 <style>
 body {
@@ -15,7 +15,7 @@ body {
   align-items:center;
   height:100vh;
   background:radial-gradient(ellipse at center,#0b0c1a 0%,#000010 100%);
-  transition:background 0.3s ease;
+  transition:background 0.5s ease;
 }
 #snowCanvas{
   position:fixed;
@@ -24,15 +24,6 @@ body {
   width:100%;
   height:100%;
   z-index:-2;
-}
-#bloodCanvas {
-  position: fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  pointer-events:none;
-  z-index:2;
 }
 .neon-text{
   font-size:60px;
@@ -65,7 +56,6 @@ body {
 <body>
 
 <canvas id="snowCanvas"></canvas>
-<canvas id="bloodCanvas"></canvas>
 
 <div class="neon-text" id="neonText">
   آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور
@@ -81,140 +71,67 @@ const ctx=canvas.getContext('2d');
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 
-const bloodCanvas=document.getElementById('bloodCanvas');
-const bctx=bloodCanvas.getContext('2d');
-bloodCanvas.width=window.innerWidth;
-bloodCanvas.height=window.innerHeight;
-
 // ثلج
 const flakesCount=150;
 let flakes=[];
 for(let i=0;i<flakesCount;i++){
-  flakes.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:Math.random()*4+1,speed:Math.random()*2+0.5,opacity:Math.random()*0.8+0.2,dx:0,dy:0});
+  flakes.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:Math.random()*4+1,speed:Math.random()*2+0.5,opacity:Math.random()*0.8+0.2});
 }
-
-let waveOffset=0;
 function drawScene(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  let gradient=ctx.createLinearGradient(0,waveOffset,canvas.width,canvas.height+waveOffset);
-  gradient.addColorStop(0,'#0b0c1a');
-  gradient.addColorStop(0.5,'#001020');
-  gradient.addColorStop(1,'#0b0c1a');
-  ctx.fillStyle=gradient;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-  waveOffset+=0.3;
-  if(waveOffset>canvas.height) waveOffset=0;
-
-  // نجوم
-  for(let i=0;i<60;i++){
-    ctx.fillStyle='rgba(255,255,255,'+Math.random()+')';
-    ctx.beginPath();
-    ctx.arc(Math.random()*canvas.width,Math.random()*canvas.height,Math.random()*2,0,Math.PI*2);
-    ctx.fill();
-  }
-
-  // ثلج
   for(let f of flakes){
     ctx.fillStyle=`rgba(255,255,255,${f.opacity})`;
     ctx.beginPath();
     ctx.arc(f.x,f.y,f.radius,0,Math.PI*2);
     ctx.fill();
-    f.x+=f.dx; f.y+=f.dy;
-    if(f.y>canvas.height||f.x>canvas.width||f.x<0){f.x=Math.random()*canvas.width;f.y=-f.radius;f.dx=0;f.dy=0;}
+    f.y+=f.speed;
+    f.x+=Math.sin(f.y*0.01)*0.7;
+    if(f.y>canvas.height){f.y=-f.radius; f.x=Math.random()*canvas.width;}
   }
-
-  moveSnow();
   requestAnimationFrame(drawScene);
-}
-function moveSnow(){
-  for(let f of flakes){if(f.dx===0&&f.dy===0){f.y+=f.speed;f.x+=Math.sin(f.y*0.01)*0.7;}}
 }
 drawScene();
 window.addEventListener('resize',()=>{
-  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
-  bloodCanvas.width=window.innerWidth; bloodCanvas.height=window.innerHeight;
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
 });
 
 const neonText=document.getElementById('neonText');
 const explosionSound=document.getElementById('explosionSound');
 
-const texts=["الأندآل ، في عين بعض جدع ـآن","السقوط مش عجز ، ده بداية المشوار","الدم لا يُغسل إلا بالدم"];
+const texts=["الأندآل ، في عين بعض جدع ـآن","السقوط مش عجز ، ده بداية المشوار"];
 let currentExplosion=0;
-
-// دالة إنشاء قطرات الدم
-function createBlood(){
-  const drops=[];
-  for(let i=0;i<80;i++){
-    drops.push({
-      x: Math.random()*100,
-      y: canvas.height - Math.random()*50,
-      radius: Math.random()*8+4,
-      vx: Math.random()*4+1,
-      vy: - (Math.random()*3+1),
-      alpha:1
-    });
-  }
-  return drops;
-}
-
-function drawBlood(drops){
-  bctx.clearRect(0,0,bloodCanvas.width,bloodCanvas.height);
-  for(let d of drops){
-    bctx.beginPath();
-    bctx.arc(d.x,d.y,d.radius,0,Math.PI*2);
-    bctx.fillStyle=`rgba(139,0,0,${d.alpha})`;
-    bctx.fill();
-  }
-}
-
-function drawBloodOnText(drops){
-  const rect = neonText.getBoundingClientRect();
-  bctx.fillStyle='rgba(139,0,0,0.7)';
-  drops.forEach(d=>{
-    const tx = rect.left + Math.random()*rect.width;
-    const ty = rect.top + Math.random()*rect.height;
-    bctx.beginPath();
-    bctx.arc(tx,ty,d.radius,0,Math.PI*2);
-    bctx.fill();
-  });
-}
 
 neonText.addEventListener('click',()=>{
   explosionSound.currentTime=0;
   explosionSound.volume=1;
   explosionSound.play();
-  document.body.style.background="#000";
+
+  // بلع النور للنص الابتدائي
+  if(currentExplosion===0){
+    let intensity=0;
+    const absorbLight = setInterval(()=>{
+      intensity+=0.05;
+      neonText.style.textShadow=`0 0 ${intensity*30}px rgba(0,0,0,${intensity})`;
+      document.body.style.background=`radial-gradient(circle at center, rgba(0,0,0,${intensity}) 0%, #000010 100%)`;
+      if(intensity>=1) clearInterval(absorbLight);
+    },30);
+  }
+
+  // انفجار نصوص أخرى
   neonText.style.transition="transform 0.5s ease, opacity 0.5s ease";
   neonText.style.opacity=0;
   neonText.style.transform=`translate(${Math.random()*800-400}px,${Math.random()*400-200}px) rotate(${Math.random()*360-180}deg)`;
-  for(let f of flakes){f.dx=(Math.random()-0.5)*15;f.dy=(Math.random()-0.5)*15;}
-
-  if(currentExplosion===2){
-    let drops=createBlood();
-    let bloodFrame=0;
-    function animateBlood(){
-      bloodFrame++;
-      for(let d of drops){d.x+=d.vx; d.y+=d.vy; d.alpha-=0.02;}
-      drawBlood(drops);
-      drawBloodOnText(drops);
-      if(bloodFrame<125){ // تقريبًا 2.5 ثانية عند 60fps
-        requestAnimationFrame(animateBlood);
-      } else{
-        bctx.clearRect(0,0,bloodCanvas.width,bloodCanvas.height);
-      }
-    }
-    animateBlood();
-  }
 
   setTimeout(()=>{
-    document.body.style.background="radial-gradient(ellipse at center,#0b0c1a 0%,#000010 100%)";
     neonText.style.opacity=1;
     neonText.style.transform="translate(0,0) rotate(0deg)";
-    for(let f of flakes){f.dx=0;f.dy=0;}
-    neonText.textContent=texts[currentExplosion];
+    if(currentExplosion>0){
+      neonText.textContent=texts[currentExplosion-1];
+    }
     currentExplosion++;
-    if(currentExplosion>=texts.length) currentExplosion=0;
-  },2500); // مدة الانفجار 2.5 ثانية
+    if(currentExplosion>texts.length) currentExplosion=0;
+  },2000); // مدة الانفجار 2.5 ثانية
 });
 </script>
 </body>
