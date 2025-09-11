@@ -2,83 +2,34 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>الانفجارات وامتصاص الضوء</title>
+<title>الانفجارات السينمائية النهائية</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
 <style>
-body {
-  margin:0;
-  padding:0;
-  overflow:hidden;
-  font-family:'Cairo',sans-serif;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  background:radial-gradient(ellipse at center,#0b0c1a 0%,#000010 100%);
-  transition:background 0.5s ease;
-}
-#snowCanvas{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  z-index:-2;
-}
-.neon-text{
-  font-size:60px;
-  font-weight:700;
-  text-align:center;
-  line-height:1.4;
-  background:linear-gradient(90deg,#fff,#aaa);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  animation:neonGlow 2s infinite alternate, shakeText 0.6s infinite alternate;
-  cursor:pointer;
-  position:relative;
-  transition:transform 0.3s ease, opacity 0.3s ease;
-  z-index:1;
-}
-@keyframes neonGlow{
-  0%{ text-shadow:0 0 10px rgba(255,255,255,0.7),0 0 20px rgba(255,255,255,0.5),0 0 30px rgba(100,150,255,0.3),0 0 40px rgba(80,120,255,0.2);}
-  50%{ text-shadow:0 0 20px rgba(255,255,255,1),0 0 40px rgba(255,255,255,0.9),0 0 60px rgba(150,200,255,0.7),0 0 80px rgba(120,180,255,0.6);}
-  100%{ text-shadow:0 0 15px rgba(255,255,255,0.9),0 0 30px rgba(255,255,255,0.7),0 0 45px rgba(120,170,255,0.5),0 0 60px rgba(100,150,255,0.4);}
-}
-@keyframes shakeText{
-  0%{transform:translate(0,0);}
-  25%{transform:translate(-2px,1px);}
-  50%{transform:translate(2px,-1px);}
-  75%{transform:translate(-1px,2px);}
-  100%{transform:translate(1px,-2px);}
-}
+body{margin:0;padding:0;overflow:hidden;font-family:'Cairo',sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;background:radial-gradient(ellipse at center,#0b0c1a 0%,#000010 100%);transition:background 0.5s ease}
+#snowCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2}
+.neon-text{font-size:60px;font-weight:700;text-align:center;line-height:1.4;background:linear-gradient(90deg,#fff,#aaa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:neonGlow 2s infinite alternate;cursor:pointer;position:relative;transition:transform 0.3s ease, opacity 0.3s ease, text-shadow 0.3s ease;z-index:1}
+@keyframes neonGlow{0%{text-shadow:0 0 10px rgba(255,255,255,0.7),0 0 20px rgba(255,255,255,0.5),0 0 30px rgba(100,150,255,0.3),0 0 40px rgba(80,120,255,0.2)}50%{text-shadow:0 0 20px rgba(255,255,255,1),0 0 40px rgba(255,255,255,0.9),0 0 60px rgba(150,200,255,0.7),0 0 80px rgba(120,180,255,0.6)}100%{text-shadow:0 0 15px rgba(255,255,255,0.9),0 0 30px rgba(255,255,255,0.7),0 0 45px rgba(120,170,255,0.5),0 0 60px rgba(100,150,255,0.4)}}
 </style>
 </head>
 <body>
 
 <canvas id="snowCanvas"></canvas>
 
-<div class="neon-text" id="neonText">
-  آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور
-</div>
+<div class="neon-text" id="neonText">آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور</div>
 
-<audio id="explosionSound">
-  <source src="https://www.soundjay.com/explosion/sounds/explosion-03.mp3" type="audio/mpeg">
+<audio id="explosionSound" preload="auto">
+  <source src="https://www.soundjay.com/explosion/sounds/explosion-01.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-const canvas=document.getElementById('snowCanvas');
-const ctx=canvas.getContext('2d');
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-
-// ثلج
-const flakesCount=150;
-let flakes=[];
+const canvas=document.getElementById('snowCanvas'),ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+let flakesCount=150,flakes=[];
 for(let i=0;i<flakesCount;i++){
-  flakes.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:Math.random()*4+1,speed:Math.random()*2+0.5,opacity:Math.random()*0.8+0.2});
+  flakes.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:Math.random()*4+1,speed:Math.random()*2+0.5,opacity:Math.random()*0.8+0.2})
 }
 function drawScene(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
+  let hitText=false;
   for(let f of flakes){
     ctx.fillStyle=`rgba(255,255,255,${f.opacity})`;
     ctx.beginPath();
@@ -86,52 +37,42 @@ function drawScene(){
     ctx.fill();
     f.y+=f.speed;
     f.x+=Math.sin(f.y*0.01)*0.7;
-    if(f.y>canvas.height){f.y=-f.radius; f.x=Math.random()*canvas.width;}
+    if(f.y>canvas.height){f.y=-f.radius;f.x=Math.random()*canvas.width;}
+    
+    // تأثير التوهج عند سقوط الثلج على النص
+    const textRect=neonText.getBoundingClientRect();
+    if(f.x>textRect.left && f.x<textRect.right && f.y>textRect.top && f.y<textRect.bottom){
+      hitText=true;
+    }
+  }
+  if(hitText){
+    neonText.style.textShadow="0 0 40px #fff,0 0 80px #0af,0 0 120px #0ff";
+    setTimeout(()=>{neonText.style.textShadow=""},100);
   }
   requestAnimationFrame(drawScene);
 }
 drawScene();
-window.addEventListener('resize',()=>{
-  canvas.width=window.innerWidth;
-  canvas.height=window.innerHeight;
-});
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight});
 
-const neonText=document.getElementById('neonText');
-const explosionSound=document.getElementById('explosionSound');
-
+const neonText=document.getElementById('neonText'),explosionSound=document.getElementById('explosionSound');
 const texts=["الأندآل ، في عين بعض جدع ـآن","السقوط مش عجز ، ده بداية المشوار"];
-let currentExplosion=0;
+let currentStep=0,firstClick=true;
 
 neonText.addEventListener('click',()=>{
-  explosionSound.currentTime=0;
-  explosionSound.volume=1;
-  explosionSound.play();
+explosionSound.currentTime=0;explosionSound.volume=1;explosionSound.play();
 
-  // بلع النور للنص الابتدائي
-  if(currentExplosion===0){
-    let intensity=0;
-    const absorbLight = setInterval(()=>{
-      intensity+=0.05;
-      neonText.style.textShadow=`0 0 ${intensity*30}px rgba(0,0,0,${intensity})`;
-      document.body.style.background=`radial-gradient(circle at center, rgba(0,0,0,${intensity}) 0%, #000010 100%)`;
-      if(intensity>=1) clearInterval(absorbLight);
-    },30);
-  }
+if(firstClick){
+let intensity=0;
+const absorbLight=setInterval(()=>{intensity+=0.05;neonText.style.textShadow=`0 0 ${intensity*60}px rgba(0,0,0,${intensity})`;document.body.style.background=`radial-gradient(circle at center, rgba(0,0,0,${intensity}) 0%, #000010 100%)`;if(intensity>=1)clearInterval(absorbLight)},30);firstClick=false}
 
-  // انفجار نصوص أخرى
-  neonText.style.transition="transform 0.5s ease, opacity 0.5s ease";
-  neonText.style.opacity=0;
-  neonText.style.transform=`translate(${Math.random()*800-400}px,${Math.random()*400-200}px) rotate(${Math.random()*360-180}deg)`;
+let shakeCount=0;
+const shakeInterval=setInterval(()=>{neonText.style.transform=`translate(${Math.random()*20-10}px,${Math.random()*10-5}px) rotate(${Math.random()*10-5}deg)`;shakeCount++;if(shakeCount>15)clearInterval(shakeInterval)},50);
 
-  setTimeout(()=>{
-    neonText.style.opacity=1;
-    neonText.style.transform="translate(0,0) rotate(0deg)";
-    if(currentExplosion>0){
-      neonText.textContent=texts[currentExplosion-1];
-    }
-    currentExplosion++;
-    if(currentExplosion>texts.length) currentExplosion=0;
-  },2000); // مدة الانفجار 2.5 ثانية
+neonText.style.transition="opacity 0.5s ease";neonText.style.opacity=0;
+
+setTimeout(()=>{neonText.style.opacity=1;neonText.style.transform="translate(0,0) rotate(0deg)";
+if(currentStep<texts.length){neonText.textContent=texts[currentStep];neonText.style.textShadow="0 0 25px #fff,0 0 50px #0af,0 0 75px #0ff";setTimeout(()=>{neonText.style.textShadow=""},700);currentStep++}
+else{neonText.textContent="آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور";currentStep=0;firstClick=true}},2500);
 });
 </script>
 </body>
