@@ -22,11 +22,20 @@ body{margin:0;padding:0;overflow:hidden;font-family:'Cairo',sans-serif;display:f
 </audio>
 
 <script>
-const canvas=document.getElementById('snowCanvas'),ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+const canvas=document.getElementById('snowCanvas'),ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+
 let flakesCount=150,flakes=[];
 for(let i=0;i<flakesCount;i++){
   flakes.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:Math.random()*4+1,speed:Math.random()*2+0.5,opacity:Math.random()*0.8+0.2})
 }
+
+// النص
+const neonText=document.getElementById('neonText'),explosionSound=document.getElementById('explosionSound');
+const texts=["الأندآل ، في عين بعض جدع ـآن","السقوط مش عجز ، ده بداية المشوار"];
+let currentStep=0,firstClick=true;
+
+// رسم الثلج
 function drawScene(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   let hitText=false;
@@ -39,7 +48,7 @@ function drawScene(){
     f.x+=Math.sin(f.y*0.01)*0.7;
     if(f.y>canvas.height){f.y=-f.radius;f.x=Math.random()*canvas.width;}
     
-    // تأثير التوهج عند سقوط الثلج على النص
+    // توهج النص عند سقوط الثلج
     const textRect=neonText.getBoundingClientRect();
     if(f.x>textRect.left && f.x<textRect.right && f.y>textRect.top && f.y<textRect.bottom){
       hitText=true;
@@ -52,27 +61,52 @@ function drawScene(){
   requestAnimationFrame(drawScene);
 }
 drawScene();
+
+// ضبط حجم الكانفاس عند تغيير حجم الشاشة
 window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight});
 
-const neonText=document.getElementById('neonText'),explosionSound=document.getElementById('explosionSound');
-const texts=["الأندآل ، في عين بعض جدع ـآن","السقوط مش عجز ، ده بداية المشوار"];
-let currentStep=0,firstClick=true;
-
+// عند الضغط على النص
 neonText.addEventListener('click',()=>{
-explosionSound.currentTime=0;explosionSound.volume=1;explosionSound.play();
+  explosionSound.currentTime=0;explosionSound.volume=1;explosionSound.play();
 
-if(firstClick){
-let intensity=0;
-const absorbLight=setInterval(()=>{intensity+=0.05;neonText.style.textShadow=`0 0 ${intensity*60}px rgba(0,0,0,${intensity})`;document.body.style.background=`radial-gradient(circle at center, rgba(0,0,0,${intensity}) 0%, #000010 100%)`;if(intensity>=1)clearInterval(absorbLight)},30);firstClick=false}
+  // امتصاص الضوء للنص الابتدائي
+  if(firstClick){
+    let intensity=0;
+    const absorbLight=setInterval(()=>{
+      intensity+=0.05;
+      neonText.style.textShadow=`0 0 ${intensity*60}px rgba(0,0,0,${intensity})`;
+      document.body.style.background=`radial-gradient(circle at center, rgba(0,0,0,${intensity}) 0%, #000010 100%)`;
+      if(intensity>=1) clearInterval(absorbLight);
+    },30);
+    firstClick=false;
+  }
 
-let shakeCount=0;
-const shakeInterval=setInterval(()=>{neonText.style.transform=`translate(${Math.random()*20-10}px,${Math.random()*10-5}px) rotate(${Math.random()*10-5}deg)`;shakeCount++;if(shakeCount>15)clearInterval(shakeInterval)},50);
+  // اهتزاز النص أثناء الانفجار
+  let shakeCount=0;
+  const shakeInterval=setInterval(()=>{
+    neonText.style.transform=`translate(${Math.random()*20-10}px,${Math.random()*10-5}px) rotate(${Math.random()*10-5}deg)`;
+    shakeCount++;
+    if(shakeCount>15) clearInterval(shakeInterval);
+  },50);
 
-neonText.style.transition="opacity 0.5s ease";neonText.style.opacity=0;
+  neonText.style.transition="opacity 0.5s ease";
+  neonText.style.opacity=0;
 
-setTimeout(()=>{neonText.style.opacity=1;neonText.style.transform="translate(0,0) rotate(0deg)";
-if(currentStep<texts.length){neonText.textContent=texts[currentStep];neonText.style.textShadow="0 0 25px #fff,0 0 50px #0af,0 0 75px #0ff";setTimeout(()=>{neonText.style.textShadow=""},700);currentStep++}
-else{neonText.textContent="آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور";currentStep=0;firstClick=true}},2500);
+  // تغيير النصوص بعد الانفجار
+  setTimeout(()=>{
+    neonText.style.opacity=1;
+    neonText.style.transform="translate(0,0) rotate(0deg)";
+    if(currentStep<texts.length){
+      neonText.textContent=texts[currentStep];
+      neonText.style.textShadow="0 0 25px #fff,0 0 50px #0af,0 0 75px #0ff";
+      setTimeout(()=>{neonText.style.textShadow=""},700);
+      currentStep++;
+    } else {
+      neonText.textContent="آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور";
+      currentStep=0;
+      firstClick=true;
+    }
+  },2500);
 });
 </script>
 </body>
