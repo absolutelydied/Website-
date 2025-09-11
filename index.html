@@ -2,97 +2,188 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>تأثير انفجار مع نجوم ✨</title>
+<title>الأندآل ، في عين بعض جدع ـآن</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
 <style>
-  body {
-    background-color: #1a1a1a; /* اللون الدرامي الطبيعي */
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    transition: background-color 0.5s;
-  }
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Cairo', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: radial-gradient(ellipse at center, #0b0c1a 0%, #000010 100%);
+  transition: background 0.3s ease;
+}
 
-  h1 {
-    font-size: 3em;
-    color: transparent; /* نخفي الجملة */
-    text-align: center;
-    position: relative;
-    z-index: 2;
-  }
+#snowCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
 
-  .star {
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    background: white;
-    border-radius: 50%;
-    z-index: 1;
-    pointer-events: none;
-  }
+.neon-text {
+  font-size: 60px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+  background: linear-gradient(90deg, #fff, #aaa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: neonGlow 2s infinite alternate, shakeText 0.6s infinite alternate;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+@keyframes neonGlow {
+  0% { text-shadow:0 0 10px rgba(255,255,255,0.7),0 0 20px rgba(255,255,255,0.5),0 0 30px rgba(100,150,255,0.3),0 0 40px rgba(80,120,255,0.2);}
+  50% { text-shadow:0 0 20px rgba(255,255,255,1),0 0 40px rgba(255,255,255,0.9),0 0 60px rgba(150,200,255,0.7),0 0 80px rgba(120,180,255,0.6);}
+  100% { text-shadow:0 0 15px rgba(255,255,255,0.9),0 0 30px rgba(255,255,255,0.7),0 0 45px rgba(120,170,255,0.5),0 0 60px rgba(100,150,255,0.4);}
+}
+
+@keyframes shakeText {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 1px); }
+  50% { transform: translate(2px, -1px); }
+  75% { transform: translate(-1px, 2px); }
+  100% { transform: translate(1px, -2px); }
+}
 </style>
 </head>
 <body>
 
-<h1 id="myText">آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور</h1>
+<canvas id="snowCanvas"></canvas>
 
-<!-- صوت يعتمد على الإنترنت -->
-<audio id="boom" src="https://www.soundjay.com/mechanical/sounds/explosion-01.mp3"></audio>
+<div class="neon-text" id="neonText">
+  آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور
+</div>
+
+<!-- صوت انفجار -->
+<audio id="explosionSound">
+  <source src="https://www.soundjay.com/mechanical/sounds/explosion-01.mp3" type="audio/mpeg">
+</audio>
 
 <script>
-  const boomSound = document.getElementById('boom');
+const canvas = document.getElementById('snowCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-  const sentences = [
-    "آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور",
-    "الأندآل ، في عين بعض جدع ـآن"
-  ];
-  let current = 0;
+// إعداد الثلج
+const flakesCount = 150;
+let flakes = [];
+for (let i = 0; i < flakesCount; i++) {
+  flakes.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    radius: Math.random() * 4 + 1,
+    speed: Math.random() * 2 + 0.5,
+    opacity: Math.random() * 0.8 + 0.2,
+    dx: 0,
+    dy: 0
+  });
+}
 
-  function createStars(count) {
-    const stars = [];
-    for (let i = 0; i < count; i++) {
-      const star = document.createElement('div');
-      star.classList.add('star');
-      star.style.left = `${window.innerWidth/2}px`;
-      star.style.top = `${window.innerHeight/2}px`;
-      document.body.appendChild(star);
-      stars.push(star);
+let waveOffset = 0;
+
+function drawScene() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // خلفية ديناميكية
+  let gradient = ctx.createLinearGradient(0, waveOffset, canvas.width, canvas.height + waveOffset);
+  gradient.addColorStop(0, '#0b0c1a');
+  gradient.addColorStop(0.5, '#001020');
+  gradient.addColorStop(1, '#0b0c1a');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  waveOffset += 0.3;
+  if (waveOffset > canvas.height) waveOffset = 0;
+
+  // نجوم
+  for (let i = 0; i < 60; i++) {
+    ctx.fillStyle = 'rgba(255,255,255,' + Math.random() + ')';
+    ctx.beginPath();
+    ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 2, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  // ثلج
+  for (let f of flakes) {
+    ctx.fillStyle = `rgba(255,255,255,${f.opacity})`;
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, f.radius, 0, Math.PI*2);
+    ctx.fill();
+    f.x += f.dx;
+    f.y += f.dy;
+    // إعادة ضبط إذا خرج عن الشاشة
+    if (f.y > canvas.height || f.x > canvas.width || f.x < 0) {
+      f.x = Math.random() * canvas.width;
+      f.y = -f.radius;
+      f.dx = 0;
+      f.dy = 0;
     }
-    return stars;
   }
 
-  function animateStars(stars) {
-    stars.forEach(star => {
-      const angle = Math.random() * 2 * Math.PI;
-      const distance = 200 + Math.random() * 200;
-      const x = Math.cos(angle) * distance;
-      const y = Math.sin(angle) * distance;
-      star.style.transition = 'transform 2s linear, opacity 2s';
-      star.style.transform = `translate(${x}px, ${y}px)`;
-      star.style.opacity = 0;
-      setTimeout(() => star.remove(), 2000);
-    });
+  moveSnow();
+  requestAnimationFrame(drawScene);
+}
+
+function moveSnow() {
+  for (let f of flakes) {
+    if(f.dx === 0 && f.dy === 0) { // فقط عندما لا يكون انفجار
+      f.y += f.speed;
+      f.x += Math.sin(f.y * 0.01) * 0.7;
+    }
+  }
+}
+
+drawScene();
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+// الانفجار عند الضغط على النص
+const neonText = document.getElementById('neonText');
+const explosionSound = document.getElementById('explosionSound');
+
+neonText.addEventListener('click', () => {
+  explosionSound.currentTime = 0;
+  explosionSound.play();
+
+  // اجعل الشاشة سوداء
+  document.body.style.background = "#000";
+
+  // اجعل النص يختفي بشكل متفرق
+  neonText.style.transition = "transform 0.5s ease, opacity 0.5s ease";
+  neonText.style.opacity = 0;
+  neonText.style.transform = `translate(${Math.random()*800-400}px, ${Math.random()*400-200}px) rotate(${Math.random()*360-180}deg)`;
+
+  // اجعل الثلج يتشتت
+  for(let f of flakes){
+    f.dx = (Math.random()-0.5)*15;
+    f.dy = (Math.random()-0.5)*15;
   }
 
-  function explodeEffect() {
-    // الخلفية تتحول سوداء + صوت + نجوم
-    document.body.style.backgroundColor = 'black';
-    boomSound.currentTime = 0; // يبدأ الصوت من البداية
-    boomSound.play();
-
-    const stars = createStars(50);
-    animateStars(stars);
-
-    // بعد 5 ثواني ترجع الخلفية للون الدرامي الطبيعي
-    setTimeout(() => {
-      document.body.style.backgroundColor = '#1a1a1a';
-      current = (current + 1) % sentences.length;
-    }, 5000);
-  }
-
-  // الانفجار كل 10 ثواني
-  setInterval(explodeEffect, 10000);
+  // بعد 4 ثواني، إعادة كل شيء
+  setTimeout(()=>{
+    document.body.style.background = "radial-gradient(ellipse at center, #0b0c1a 0%, #000010 100%)";
+    neonText.style.opacity = 1;
+    neonText.style.transform = "translate(0,0) rotate(0deg)";
+    for(let f of flakes){
+      f.dx = 0;
+      f.dy = 0;
+    }
+  }, 4000);
+});
 </script>
 
 </body>
