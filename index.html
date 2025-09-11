@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>موقع الانفجارات الدائري</title>
+<title>موقع الانفجارات الدائري بالدم الواقعي</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
 <style>
 body {
@@ -24,7 +24,15 @@ body {
   width:100%;
   height:100%;
   z-index:-2;
-  transition:opacity 0.3s ease;
+}
+#bloodCanvas {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:2;
 }
 .neon-text{
   font-size:60px;
@@ -37,19 +45,8 @@ body {
   animation:neonGlow 2s infinite alternate, shakeText 0.6s infinite alternate;
   cursor:pointer;
   position:relative;
-  transition:transform 0.3s ease,opacity 0.3s ease;
+  transition:transform 0.3s ease, opacity 0.3s ease;
   z-index:1;
-}
-#bloodEffect{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  pointer-events:none;
-  z-index:2;
-  background:red;
-  opacity:0;
 }
 @keyframes neonGlow{
   0%{ text-shadow:0 0 10px rgba(255,255,255,0.7),0 0 20px rgba(255,255,255,0.5),0 0 30px rgba(100,150,255,0.3),0 0 40px rgba(80,120,255,0.2);}
@@ -68,12 +65,14 @@ body {
 <body>
 
 <canvas id="snowCanvas"></canvas>
+<canvas id="bloodCanvas"></canvas>
+
 <div class="neon-text" id="neonText">
   آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور
 </div>
-<div id="bloodEffect"></div>
+
 <audio id="explosionSound">
-  <source src="https://www.soundjay.com/mechanical/sounds/explosion-01.mp3" type="audio/mpeg">
+  <source src="https://www.soundjay.com/explosion/sounds/explosion-02.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -82,14 +81,19 @@ const ctx=canvas.getContext('2d');
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 
+const bloodCanvas=document.getElementById('bloodCanvas');
+const bctx=bloodCanvas.getContext('2d');
+bloodCanvas.width=window.innerWidth;
+bloodCanvas.height=window.innerHeight;
+
 // ثلج
 const flakesCount=150;
 let flakes=[];
 for(let i=0;i<flakesCount;i++){
   flakes.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:Math.random()*4+1,speed:Math.random()*2+0.5,opacity:Math.random()*0.8+0.2,dx:0,dy:0});
 }
-let waveOffset=0;
 
+let waveOffset=0;
 function drawScene(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   let gradient=ctx.createLinearGradient(0,waveOffset,canvas.width,canvas.height+waveOffset);
@@ -100,6 +104,7 @@ function drawScene(){
   ctx.fillRect(0,0,canvas.width,canvas.height);
   waveOffset+=0.3;
   if(waveOffset>canvas.height) waveOffset=0;
+
   // نجوم
   for(let i=0;i<60;i++){
     ctx.fillStyle='rgba(255,255,255,'+Math.random()+')';
@@ -107,6 +112,7 @@ function drawScene(){
     ctx.arc(Math.random()*canvas.width,Math.random()*canvas.height,Math.random()*2,0,Math.PI*2);
     ctx.fill();
   }
+
   // ثلج
   for(let f of flakes){
     ctx.fillStyle=`rgba(255,255,255,${f.opacity})`;
@@ -116,6 +122,7 @@ function drawScene(){
     f.x+=f.dx; f.y+=f.dy;
     if(f.y>canvas.height||f.x>canvas.width||f.x<0){f.x=Math.random()*canvas.width;f.y=-f.radius;f.dx=0;f.dy=0;}
   }
+
   moveSnow();
   requestAnimationFrame(drawScene);
 }
@@ -123,14 +130,54 @@ function moveSnow(){
   for(let f of flakes){if(f.dx===0&&f.dy===0){f.y+=f.speed;f.x+=Math.sin(f.y*0.01)*0.7;}}
 }
 drawScene();
-window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;});
+window.addEventListener('resize',()=>{
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  bloodCanvas.width=window.innerWidth; bloodCanvas.height=window.innerHeight;
+});
 
 const neonText=document.getElementById('neonText');
 const explosionSound=document.getElementById('explosionSound');
-const bloodEffect=document.getElementById('bloodEffect');
 
 const texts=["الأندآل ، في عين بعض جدع ـآن","السقوط مش عجز ، ده بداية المشوار","الدم لا يُغسل إلا بالدم"];
 let currentExplosion=0;
+
+// دالة إنشاء قطرات الدم
+function createBlood(){
+  const drops=[];
+  for(let i=0;i<60;i++){
+    drops.push({
+      x: Math.random()*100, // البداية من الركن الأيسر السفلي
+      y: canvas.height - Math.random()*50,
+      radius: Math.random()*8+4,
+      vx: Math.random()*4+1,
+      vy: - (Math.random()*3+1),
+      alpha:1
+    });
+  }
+  return drops;
+}
+
+function drawBlood(drops){
+  bctx.clearRect(0,0,bloodCanvas.width,bloodCanvas.height);
+  for(let d of drops){
+    bctx.beginPath();
+    bctx.arc(d.x,d.y,d.radius,0,Math.PI*2);
+    bctx.fillStyle=`rgba(139,0,0,${d.alpha})`;
+    bctx.fill();
+  }
+}
+
+function drawBloodOnText(textDrops){
+  const rect = neonText.getBoundingClientRect();
+  bctx.fillStyle='rgba(139,0,0,0.5)';
+  textDrops.forEach(td=>{
+    const tx = rect.left + Math.random()*rect.width;
+    const ty = rect.top + Math.random()*rect.height;
+    bctx.beginPath();
+    bctx.arc(tx,ty,td.radius,0,Math.PI*2);
+    bctx.fill();
+  });
+}
 
 neonText.addEventListener('click',()=>{
   explosionSound.currentTime=0;
@@ -140,17 +187,20 @@ neonText.addEventListener('click',()=>{
   neonText.style.opacity=0;
   neonText.style.transform=`translate(${Math.random()*800-400}px,${Math.random()*400-200}px) rotate(${Math.random()*360-180}deg)`;
   for(let f of flakes){f.dx=(Math.random()-0.5)*15;f.dy=(Math.random()-0.5)*15;}
-  
-  // انفجار الدم في الانفجار الثالث
+
+  // انفجار الدم على الانفجار الثالث
   if(currentExplosion===2){
-    bloodEffect.style.opacity=0.8;
-    bloodEffect.style.background='linear-gradient(45deg, rgba(139,0,0,0.8) 0%, rgba(220,20,60,0.6) 100%)';
-    bloodEffect.style.transform='translate(-100%,100%) rotate(-20deg) scale(1.5)';
-    setTimeout(()=>{
-      bloodEffect.style.transition='all 1s ease';
-      bloodEffect.style.opacity=0;
-      bloodEffect.style.transform='translate(0,-100%) rotate(0deg) scale(1)';
-    },1000);
+    let drops=createBlood();
+    let bloodFrame=0;
+    function animateBlood(){
+      bloodFrame++;
+      for(let d of drops){d.x+=d.vx; d.y+=d.vy; d.alpha-=0.02;}
+      drawBlood(drops);
+      drawBloodOnText(drops);
+      if(bloodFrame<50){ requestAnimationFrame(animateBlood);}
+      else{ bctx.clearRect(0,0,bloodCanvas.width,bloodCanvas.height);}
+    }
+    animateBlood();
   }
 
   setTimeout(()=>{
