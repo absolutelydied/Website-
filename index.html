@@ -2,52 +2,34 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>Abdo Website</title>
+<title>تأثير انفجار مع نجوم ✨</title>
 <style>
   body {
-    background-color: white;
+    background-color: #1a1a1a; /* اللون الدرامي الطبيعي */
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    overflow: hidden;
-    transition: background-color 0.3s;
+    transition: background-color 0.5s;
   }
 
   h1 {
     font-size: 3em;
-    transition: transform 0.3s, color 0.3s;
+    color: transparent; /* نخفي الجملة */
     text-align: center;
+    position: relative;
+    z-index: 2;
   }
 
-  /* اهتزاز الجملة */
-  .shake {
-    animation: shake 0.1s infinite;
-  }
-
-  @keyframes shake {
-    0% { transform: translate(2px, 1px) rotate(0deg); }
-    25% { transform: translate(-1px, -2px) rotate(-1deg); }
-    50% { transform: translate(-3px, 0px) rotate(1deg); }
-    75% { transform: translate(1px, 2px) rotate(0deg); }
-    100% { transform: translate(0px, 1px) rotate(-1deg); }
-  }
-
-  /* تأثير الانفجار */
-  .explode {
-    transform: scale(4);
-    color: yellow;
-    text-shadow: 0 0 20px yellow, 0 0 40px orange;
-  }
-
-  /* وميض */
-  .flash {
-    animation: flash 0.1s 5;
-  }
-
-  @keyframes flash {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.2; }
+  .star {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: white;
+    border-radius: 50%;
+    z-index: 1;
+    pointer-events: none;
   }
 </style>
 </head>
@@ -55,46 +37,62 @@
 
 <h1 id="myText">آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور</h1>
 
-<!-- الصوت داخل المشروع -->
-<audio id="boom" src="explosion.mp3"></audio>
+<!-- صوت يعتمد على الإنترنت -->
+<audio id="boom" src="https://www.soundjay.com/mechanical/sounds/explosion-01.mp3"></audio>
 
 <script>
-  const text = document.getElementById('myText');
   const boomSound = document.getElementById('boom');
 
-  // خلي الجملة تهتز
-  text.classList.add('shake');
-
-  // قائمة الجمل للتغيير
   const sentences = [
     "آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور",
     "الأندآل ، في عين بعض جدع ـآن"
   ];
-
   let current = 0;
 
-  function explodeEffect() {
-    // تغيير الخلفية والانفجار
-    document.body.style.backgroundColor = 'black';
-    text.classList.add('explode');
-    text.classList.add('flash');
-    boomSound.play();
-
-    // بعد ثانية ترجع للوضع الطبيعي
-    setTimeout(() => {
-      document.body.style.backgroundColor = 'white';
-      text.classList.remove('explode');
-      text.classList.remove('flash');
-
-      // تغيير الجملة
-      current = (current + 1) % sentences.length;
-      text.textContent = sentences[current];
-    }, 1000);
+  function createStars(count) {
+    const stars = [];
+    for (let i = 0; i < count; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      star.style.left = `${window.innerWidth/2}px`;
+      star.style.top = `${window.innerHeight/2}px`;
+      document.body.appendChild(star);
+      stars.push(star);
+    }
+    return stars;
   }
 
-  // تكرار الانفجار كل 3 ثواني
-  setInterval(explodeEffect, 2000);
+  function animateStars(stars) {
+    stars.forEach(star => {
+      const angle = Math.random() * 2 * Math.PI;
+      const distance = 200 + Math.random() * 200;
+      const x = Math.cos(angle) * distance;
+      const y = Math.sin(angle) * distance;
+      star.style.transition = 'transform 2s linear, opacity 2s';
+      star.style.transform = `translate(${x}px, ${y}px)`;
+      star.style.opacity = 0;
+      setTimeout(() => star.remove(), 2000);
+    });
+  }
 
+  function explodeEffect() {
+    // الخلفية تتحول سوداء + صوت + نجوم
+    document.body.style.backgroundColor = 'black';
+    boomSound.currentTime = 0; // يبدأ الصوت من البداية
+    boomSound.play();
+
+    const stars = createStars(50);
+    animateStars(stars);
+
+    // بعد 5 ثواني ترجع الخلفية للون الدرامي الطبيعي
+    setTimeout(() => {
+      document.body.style.backgroundColor = '#1a1a1a';
+      current = (current + 1) % sentences.length;
+    }, 5000);
+  }
+
+  // الانفجار كل 10 ثواني
+  setInterval(explodeEffect, 10000);
 </script>
 
 </body>
