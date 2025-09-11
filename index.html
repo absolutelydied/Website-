@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>الأندآل ، في عين بعض جدع ـآن</title>
+<title>موقع الانفجارات الدائري</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
 <style>
 body {
@@ -24,7 +24,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1;
+  z-index: -2;
   transition: opacity 0.3s ease;
 }
 
@@ -40,6 +40,20 @@ body {
   cursor: pointer;
   position: relative;
   transition: transform 0.3s ease, opacity 0.3s ease;
+  z-index: 1;
+}
+
+#bloodEffect {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:red;
+  opacity:0;
+  pointer-events:none;
+  z-index:2;
+  transition: opacity 0.5s ease;
 }
 
 @keyframes neonGlow {
@@ -65,7 +79,8 @@ body {
   آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور
 </div>
 
-<!-- صوت انفجار -->
+<div id="bloodEffect"></div>
+
 <audio id="explosionSound">
   <source src="https://www.soundjay.com/mechanical/sounds/explosion-01.mp3" type="audio/mpeg">
 </audio>
@@ -76,7 +91,6 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// إعداد الثلج
 const flakesCount = 150;
 let flakes = [];
 for (let i = 0; i < flakesCount; i++) {
@@ -86,103 +100,104 @@ for (let i = 0; i < flakesCount; i++) {
     radius: Math.random() * 4 + 1,
     speed: Math.random() * 2 + 0.5,
     opacity: Math.random() * 0.8 + 0.2,
-    dx: 0,
-    dy: 0
+    dx:0, dy:0
   });
 }
 
 let waveOffset = 0;
 
 function drawScene() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  // خلفية ديناميكية
-  let gradient = ctx.createLinearGradient(0, waveOffset, canvas.width, canvas.height + waveOffset);
-  gradient.addColorStop(0, '#0b0c1a');
-  gradient.addColorStop(0.5, '#001020');
-  gradient.addColorStop(1, '#0b0c1a');
+  // الخلفية
+  let gradient = ctx.createLinearGradient(0,waveOffset,canvas.width,canvas.height+waveOffset);
+  gradient.addColorStop(0,'#0b0c1a');
+  gradient.addColorStop(0.5,'#001020');
+  gradient.addColorStop(1,'#0b0c1a');
   ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillRect(0,0,canvas.width,canvas.height);
   waveOffset += 0.3;
-  if (waveOffset > canvas.height) waveOffset = 0;
+  if(waveOffset>canvas.height) waveOffset=0;
 
   // نجوم
-  for (let i = 0; i < 60; i++) {
-    ctx.fillStyle = 'rgba(255,255,255,' + Math.random() + ')';
+  for(let i=0;i<60;i++){
+    ctx.fillStyle = 'rgba(255,255,255,'+Math.random()+')';
     ctx.beginPath();
-    ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 2, 0, Math.PI*2);
+    ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*2,0,Math.PI*2);
     ctx.fill();
   }
 
   // ثلج
-  for (let f of flakes) {
+  for(let f of flakes){
     ctx.fillStyle = `rgba(255,255,255,${f.opacity})`;
     ctx.beginPath();
-    ctx.arc(f.x, f.y, f.radius, 0, Math.PI*2);
+    ctx.arc(f.x,f.y,f.radius,0,Math.PI*2);
     ctx.fill();
     f.x += f.dx;
     f.y += f.dy;
-    // إعادة ضبط إذا خرج عن الشاشة
-    if (f.y > canvas.height || f.x > canvas.width || f.x < 0) {
-      f.x = Math.random() * canvas.width;
-      f.y = -f.radius;
-      f.dx = 0;
-      f.dy = 0;
-    }
+    if(f.y>canvas.height || f.x>canvas.width || f.x<0){ f.x=Math.random()*canvas.width; f.y=-f.radius; f.dx=0; f.dy=0; }
   }
 
   moveSnow();
   requestAnimationFrame(drawScene);
 }
 
-function moveSnow() {
-  for (let f of flakes) {
-    if(f.dx === 0 && f.dy === 0) { // فقط عندما لا يكون انفجار
-      f.y += f.speed;
-      f.x += Math.sin(f.y * 0.01) * 0.7;
-    }
+function moveSnow(){
+  for(let f of flakes){
+    if(f.dx===0 && f.dy===0){ f.y+=f.speed; f.x+=Math.sin(f.y*0.01)*0.7; }
   }
 }
 
 drawScene();
+window.addEventListener('resize',()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
 
-window.addEventListener('resize', () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
+const neonText=document.getElementById('neonText');
+const explosionSound=document.getElementById('explosionSound');
+const bloodEffect=document.getElementById('bloodEffect');
 
-// الانفجار عند الضغط على النص
-const neonText = document.getElementById('neonText');
-const explosionSound = document.getElementById('explosionSound');
+const texts=[
+  "الأندآل ، في عين بعض جدع ـآن",
+  "الدم لا يُغسل إلا بالدم",
+  "السقوط مش عجز ، ده بداية المشوار"
+];
 
-neonText.addEventListener('click', () => {
-  explosionSound.currentTime = 0;
+let currentExplosion=0;
+
+neonText.addEventListener('click',()=>{
+  explosionSound.currentTime=0;
   explosionSound.play();
 
-  // اجعل الشاشة سوداء
-  document.body.style.background = "#000";
+  // الشاشة سوداء مؤقتا
+  document.body.style.background="#000";
 
-  // اجعل النص يختفي بشكل متفرق
-  neonText.style.transition = "transform 0.5s ease, opacity 0.5s ease";
-  neonText.style.opacity = 0;
-  neonText.style.transform = `translate(${Math.random()*800-400}px, ${Math.random()*400-200}px) rotate(${Math.random()*360-180}deg)`;
+  // النص يختفي ويتشتت
+  neonText.style.transition="transform 0.5s ease, opacity 0.5s ease";
+  neonText.style.opacity=0;
+  neonText.style.transform=`translate(${Math.random()*800-400}px, ${Math.random()*400-200}px) rotate(${Math.random()*360-180}deg)`;
 
-  // اجعل الثلج يتشتت
-  for(let f of flakes){
-    f.dx = (Math.random()-0.5)*15;
-    f.dy = (Math.random()-0.5)*15;
+  // ثلج يتشتت
+  for(let f of flakes){ f.dx=(Math.random()-0.5)*15; f.dy=(Math.random()-0.5)*15; }
+
+  // تأثير الدم في الانفجار الثاني
+  if(currentExplosion===1){
+    bloodEffect.style.opacity=0.7;
+    setTimeout(()=>{ bloodEffect.style.opacity=0; },1000);
   }
 
-  // بعد 4 ثواني، إعادة كل شيء
   setTimeout(()=>{
-    document.body.style.background = "radial-gradient(ellipse at center, #0b0c1a 0%, #000010 100%)";
-    neonText.style.opacity = 1;
-    neonText.style.transform = "translate(0,0) rotate(0deg)";
-    for(let f of flakes){
-      f.dx = 0;
-      f.dy = 0;
-    }
-  }, 4000);
+    // إعادة الخلفية
+    document.body.style.background="radial-gradient(ellipse at center, #0b0c1a 0%, #000010 100%)";
+    // إعادة النص
+    neonText.style.opacity=1;
+    neonText.style.transform="translate(0,0) rotate(0deg)";
+    for(let f of flakes){ f.dx=0; f.dy=0; }
+
+    // تغيير النص
+    neonText.textContent = texts[currentExplosion];
+
+    currentExplosion++;
+    if(currentExplosion>=texts.length) currentExplosion=0; // العودة للدورة
+  },4000);
 });
 </script>
 
