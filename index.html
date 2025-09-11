@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>Abdo Website</title>
+<style>
+  body {
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    transition: background-color 0.3s;
+  }
+
+  h1 {
+    font-size: 3em;
+    transition: transform 0.3s, color 0.3s;
+    text-align: center;
+  }
+
+  /* اهتزاز الجملة */
+  .shake {
+    animation: shake 0.1s infinite;
+  }
+
+  @keyframes shake {
+    0% { transform: translate(2px, 1px) rotate(0deg); }
+    25% { transform: translate(-1px, -2px) rotate(-1deg); }
+    50% { transform: translate(-3px, 0px) rotate(1deg); }
+    75% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(0px, 1px) rotate(-1deg); }
+  }
+
+  /* تأثير الانفجار */
+  .explode {
+    transform: scale(4);
+    color: yellow;
+    text-shadow: 0 0 20px yellow, 0 0 40px orange;
+  }
+
+  /* وميض */
+  .flash {
+    animation: flash 0.1s 5;
+  }
+
+  @keyframes flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+</style>
+</head>
+<body>
+
+<h1 id="myText">آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور</h1>
+
+<!-- الصوت داخل المشروع -->
+<audio id="boom" src="explosion.mp3"></audio>
+
+<script>
+  const text = document.getElementById('myText');
+  const boomSound = document.getElementById('boom');
+
+  // خلي الجملة تهتز
+  text.classList.add('shake');
+
+  // قائمة الجمل للتغيير
+  const sentences = [
+    "آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور",
+    "الأندآل ، في عين بعض جدع ـآن"
+  ];
+
+  let current = 0;
+
+  function explodeEffect() {
+    // تغيير الخلفية والانفجار
+    document.body.style.backgroundColor = 'black';
+    text.classList.add('explode');
+    text.classList.add('flash');
+    boomSound.play();
+
+    // بعد ثانية ترجع للوضع الطبيعي
+    setTimeout(() => {
+      document.body.style.backgroundColor = 'white';
+      text.classList.remove('explode');
+      text.classList.remove('flash');
+
+      // تغيير الجملة
+      current = (current + 1) % sentences.length;
+      text.textContent = sentences[current];
+    }, 1000);
+  }
+
+  // تكرار الانفجار كل 3 ثواني
+  setInterval(explodeEffect, 10000);
+
+</script>
+
+</body>
+</html>
