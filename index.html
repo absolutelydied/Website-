@@ -7,12 +7,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --main-bg-color: #0c0c0c; /* خلفية سوداء شبه كاملة */
-    --secondary-bg-color: #1a1a1a; /* لون رمادي داكن للخلفية */
-    --text-color: #a0a0a0; /* لون رمادي باهت للنص */
-    --hover-color: #ffffff; /* لون أبيض خافت عند التحويم */
-    --button-color: #333333; /* لون زر رمادي داكن */
-    --button-hover-color: #555555; /* لون زر رمادي أفتح عند التحويم */
+    --main-bg-color: #0c0c0c;
+    --secondary-bg-color: #1a1a1a;
+    --text-color: #a0a0a0;
+    --hover-color: #ffffff;
+    --button-color: #333333;
+    --button-hover-color: #555555;
   }
   
   body {
@@ -43,7 +43,7 @@
     text-align: center;
     line-height: 1.4;
     color: var(--text-color);
-    animation: fade 4s infinite alternate; /* تأثير تلاشي بدلاً من النيون */
+    animation: fade 4s infinite alternate;
     cursor: pointer;
     position: relative;
     transition: transform 0.3s ease, opacity 0.5s ease;
@@ -92,7 +92,7 @@
 
 <canvas id="snowCanvas"></canvas>
 <div class="dark-text" id="neonText">آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور</div>
-<audio id="explosionSound" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-small-bomb-explosion-2849.mp3"></audio>
+<audio id="explosionSound" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-cinematic-bomb-explosion-2490.mp3"></audio>
 
 <script>
   const canvas = document.getElementById('snowCanvas');
@@ -164,8 +164,8 @@
         neonText.style.opacity = 1;
         document.body.style.background = 'radial-gradient(ellipse at center, var(--secondary-bg-color) 0%, var(--main-bg-color) 100%)';
         isFirstClick = false;
-        displayNextText();
-      }, 2000);
+        setTimeout(displayNextText, 500); 
+      }, 500);
       return;
     }
 
