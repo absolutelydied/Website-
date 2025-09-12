@@ -110,6 +110,7 @@
   ];
   
   let currentTextIndex = 0;
+  let isFirstClick = true;
 
   const snowSettings = {
     count: 500,
@@ -151,22 +152,25 @@
     requestAnimationFrame(drawSnow);
   }
 
-  function startSequence() {
-    // تم تغيير مدة التأخير هنا إلى 3000ms (ثلاث ثواني)
-    setTimeout(() => {
+  neonText.addEventListener('click', () => {
+    explosionSound.currentTime = 0;
+    explosionSound.play();
+
+    if (isFirstClick) {
       neonText.style.opacity = 0;
       document.body.style.background = "#000000";
       neonText.textContent = "مش قولتلك؟";
-      explosionSound.currentTime = 0;
-      explosionSound.play();
       
       setTimeout(() => {
         neonText.style.opacity = 0;
-        setTimeout(displayNextText, 3000); 
+        // تم تغيير مدة التأخير هنا إلى 3000ms (ثلاث ثواني)
+        setTimeout(displayNextText, 2500); 
       }, 500);
+      return;
+    }
 
-    }, 3000); // 3 ثواني انتظار مبدئي
-  }
+    displayNextText();
+  });
 
   function displayNextText() {
     let shakeCount = 0;
@@ -185,22 +189,15 @@
       
       if (currentTextIndex < texts.length) {
         neonText.textContent = texts[currentTextIndex];
-        neonText.style.opacity = 1;
-        setTimeout(() => {
-          if (currentTextIndex >= texts.length) {
-            currentTextIndex = 0;
-            neonText.textContent = initialText;
-            startSequence();
-          } else {
-            setTimeout(displayNextText, 4000);
-          }
-        }, 4000);
+        neonText.style.color = 'var(--hover-color)';
+        setTimeout(() => { neonText.style.color = 'var(--text-color)'; }, 700);
+        currentTextIndex++;
       } else {
         neonText.textContent = initialText;
         currentTextIndex = 0;
-        setTimeout(startSequence, 4000);
+        isFirstClick = true;
       }
-      
+      neonText.style.opacity = 1;
     }, 500);
   }
 
@@ -210,7 +207,6 @@
     canvas.height = window.innerHeight;
     createFlakes();
     drawSnow();
-    startSequence();
   }
   
   window.addEventListener('load', init);
