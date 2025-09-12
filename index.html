@@ -2,158 +2,221 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Abdo</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@800&display=swap" rel="stylesheet">
 <style>
-body {
-  margin:0;
-  padding:0;
-  overflow:hidden;
-  font-family:'Cairo',sans-serif;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  background:radial-gradient(ellipse at center,#0b0c1a 0%,#000010 100%);
-  transition: background 0.3s ease;
-}
-#snowCanvas {
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  z-index:-2;
-}
-.neon-text {
-  font-size:60px;
-  font-weight:700;
-  text-align:center;
-  line-height:1.4;
-  background:linear-gradient(90deg,#fff,#f5a623);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  animation:neonGlow 2s infinite alternate;
-  cursor:pointer;
-  position:relative;
-  transition: transform 0.3s ease, opacity 0.3s ease, text-shadow 0.3s ease;
-  z-index:1;
-}
-@keyframes neonGlow {
-  0% {text-shadow:0 0 10px rgba(255,255,255,0.7),0 0 20px rgba(255,150,100,0.5);}
-  50% {text-shadow:0 0 25px rgba(255,255,255,1),0 0 50px rgba(255,150,100,0.7);}
-  100% {text-shadow:0 0 15px rgba(255,255,255,0.9),0 0 30px rgba(255,150,100,0.5);}
-}
-#discordButton {
-  position:fixed;
-  top:10px;
-  right:10px;
-  background-color:#ff4e00;
-  color:white;
-  border:none;
-  padding:30px 50px;
-  font-size:26px;
-  cursor:pointer;
-  border-radius:12px;
-  z-index:1000;
-  animation: buttonShake 2s infinite;
-}
-#discordButton:hover {
-  background-color:#ff6e2a;
-}
-@keyframes buttonShake {
-  0% {transform: translate(0,0);}
-  25% {transform: translate(3px,-3px);}
-  50% {transform: translate(-3px,3px);}
-  75% {transform: translate(3px,3px);}
-  100% {transform: translate(0,0);}
-}
+  :root {
+    --main-bg-color: #000010;
+    --secondary-bg-color: #0b0c1a;
+    --neon-glow-color-1: #ffffff; /* أبيض نقي لإشراق أفضل */
+    --neon-glow-color-2: #ff9900; /* برتقالي ساطع */
+    --button-color: #e65100; /* برتقالي أغمق قليلاً */
+    --button-hover-color: #ff6e2a; /* برتقالي فاتح عند التحويم */
+    --text-shadow-strong: 0 0 20px var(--neon-glow-color-1), 0 0 40px var(--neon-glow-color-2), 0 0 60px var(--button-color);
+    --text-shadow-initial: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 20px rgba(255, 150, 100, 0.7), 0 0 30px rgba(255, 100, 0, 0.5);
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Cairo', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: radial-gradient(ellipse at center, var(--secondary-bg-color) 0%, var(--main-bg-color) 100%);
+    transition: background 0.3s ease;
+  }
+  
+  #snowCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+  }
+  
+  .neon-text {
+    font-size: clamp(35px, 9vw, 65px); /* حجم خط أكبر وأكثر تجاوبًا */
+    font-weight: 800; /* وزن خط أثقل */
+    text-align: center;
+    line-height: 1.4;
+    background: linear-gradient(90deg, var(--neon-glow-color-1), var(--neon-glow-color-2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: neonGlow 2s infinite alternate;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.3s ease, opacity 0.5s ease, text-shadow 0.3s ease; /* زيادة سلاسة انتقال الأوباسيتي */
+    z-index: 1;
+    user-select: none;
+    text-shadow: var(--text-shadow-initial); /* تطبيق تأثير الظل الأولي */
+  }
+  
+  @keyframes neonGlow {
+    0% {text-shadow: var(--text-shadow-initial);}
+    50% {text-shadow: var(--text-shadow-strong);} /* ظل أقوى في المنتصف */
+    100% {text-shadow: var(--text-shadow-initial);}
+  }
+  
+  #discordButton {
+    position: fixed;
+    top: 25px; /* رفع الزر قليلاً */
+    right: 25px; /* تحريك الزر لليمين قليلاً */
+    background-color: var(--button-color);
+    color: white;
+    border: none;
+    padding: 18px 35px; /* تصغير حجم الزر قليلاً */
+    font-size: 20px; /* تصغير حجم الخط */
+    cursor: pointer;
+    border-radius: 10px; /* تصغير نصف قطر الزوايا قليلاً */
+    z-index: 1000;
+    animation: buttonShake 2s infinite;
+    box-shadow: 0 0 12px var(--button-color); /* ظل أخف قليلاً */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  
+  #discordButton:hover {
+    background-color: var(--button-hover-color);
+    box-shadow: 0 0 20px var(--button-hover-color); /* ظل أقوى عند التحويم */
+    transform: scale(1.08); /* تكبير أكثر قليلاً عند التحويم */
+  }
+  
+  @keyframes buttonShake {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(2px, -2px); } /* اهتزاز أقل حدة */
+    50% { transform: translate(-2px, 2px); }
+    75% { transform: translate(2px, 2px); }
+    100% { transform: translate(0, 0); }
+  }
 </style>
 </head>
 <body>
 
-<button id="discordButton" onclick="window.open('https://discordapp.com/users/1314245472428494968','_blank')">Abdo Acc</button>
+<button id="discordButton" onclick="window.open('https://discordapp.com/users/1314245472428494968', '_blank')">Abdo Acc</button>
 
 <canvas id="snowCanvas"></canvas>
 <div class="neon-text" id="neonText">آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور</div>
-<audio id="explosionSound" preload="auto">
-  <source src="https://cdn.pixabay.com/download/audio/2025/05/26/audio_346115.mp3" type="audio/mpeg">
-</audio>
+<audio id="explosionSound" preload="auto" src="https://cdn.pixabay.com/audio/2022/02/08/audio_f52361667b.mp3"></audio>
 
 <script>
-const canvas=document.getElementById('snowCanvas'), ctx=canvas.getContext('2d');
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+  const canvas = document.getElementById('snowCanvas');
+  const ctx = canvas.getContext('2d');
+  
+  const neonText = document.getElementById('neonText');
+  const explosionSound = document.getElementById('explosionSound');
 
-let flakesCount=700, flakes=[];
-for(let i=0;i<flakesCount;i++){
-  flakes.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, radius:Math.random()*4+1, speed:Math.random()*2+1, opacity:Math.random()*0.8+0.2})
-}
+  const texts = [
+    "الأندآل ، في عين بعض جدع ـآن",
+    "الدم لا يُغسل إلا بالدم",
+    "السقوط مش عجز ، ده بداية مشوار",
+    "نُحن الذنوب ، التي لا تغفر"
+  ];
+  
+  let currentStep = 0;
+  let isFirstClick = true;
 
-const neonText=document.getElementById('neonText'), explosionSound=document.getElementById('explosionSound');
-const texts=["الأندآل ، في عين بعض جدع ـآن","الدم لا يُغسل إلا بالدم","السقوط مش عجز ، ده بداية مشوار","نُحن الذنوب التي لا تغفر"];
-let currentStep=0, firstClick=true;
+  const snowSettings = {
+    count: 500,
+    minRadius: 1,
+    maxRadius: 3,
+    minSpeed: 0.5,
+    maxSpeed: 1.5,
+    maxOpacity: 0.6
+  };
 
-function drawScene(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  for(let f of flakes){
-    ctx.fillStyle=`rgba(255,255,255,${f.opacity})`;
-    ctx.beginPath();
-    ctx.arc(f.x,f.y,f.radius,0,Math.PI*2);
-    ctx.fill();
-    f.y+=f.speed;
-    f.x+=Math.sin(f.y*0.01)*0.7;
-    if(f.y>canvas.height){f.y=-f.radius; f.x=Math.random()*canvas.width}
-  }
-  requestAnimationFrame(drawScene);
-}
-drawScene();
-
-window.addEventListener('resize', ()=>{canvas.width=window.innerWidth; canvas.height=window.innerHeight});
-
-neonText.addEventListener('click', ()=>{
-  explosionSound.currentTime=0;
-  explosionSound.volume=1;
-  explosionSound.play();
-
-  if(firstClick){
-    neonText.style.opacity=0;
-    document.body.style.background="#000000";
-    const originalText = neonText.textContent;
-    neonText.textContent="مش قولتلك؟";
-    setTimeout(()=>{
-      neonText.textContent = originalText;
-      neonText.style.opacity=1;
-      document.body.style.background='radial-gradient(ellipse at center,#0b0c1a 0%,#000010 100%)';
-      firstClick=false;
-    },2000);
-  }
-
-  // اهتزاز النص بدون ميل
-  let shakeCount=0;
-  const shakeInterval=setInterval(()=>{
-    neonText.style.transform=`translate(${Math.random()*20-10}px,${Math.random()*10-5}px)`;
-    shakeCount++;
-    if(shakeCount>15) clearInterval(shakeInterval);
-  },50);
-
-  neonText.style.transition="opacity 0.5s ease";
-  neonText.style.opacity=0;
-  setTimeout(()=>{
-    neonText.style.opacity=1;
-    neonText.style.transform="translate(0,0)";
-    if(currentStep<texts.length){
-      neonText.textContent=texts[currentStep];
-      neonText.style.textShadow="0 0 25px #fff,0 0 50px #ff6e2a,0 0 75px #ff4e00";
-      setTimeout(()=>{neonText.style.textShadow="";},700);
-      currentStep++;
-    } else {
-      neonText.textContent="آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور";
-      currentStep=0;
-      firstClick=true;
+  let flakes = [];
+  function createFlakes() {
+    flakes = [];
+    for (let i = 0; i < snowSettings.count; i++) {
+      flakes.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * (snowSettings.maxRadius - snowSettings.minRadius) + snowSettings.minRadius,
+        speed: Math.random() * (snowSettings.maxSpeed - snowSettings.minSpeed) + snowSettings.minSpeed,
+        opacity: Math.random() * snowSettings.maxOpacity + 0.2
+      });
     }
-  },2500);
-});
+  }
+
+  function drawSnow() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let f of flakes) {
+      ctx.fillStyle = `rgba(255, 255, 255, ${f.opacity})`;
+      ctx.beginPath();
+      ctx.arc(f.x, f.y, f.radius, 0, Math.PI * 2);
+      ctx.fill();
+      f.y += f.speed;
+      f.x += Math.sin(f.y * 0.01) * 0.7;
+      if (f.y > canvas.height) {
+        f.y = -f.radius;
+        f.x = Math.random() * canvas.width;
+      }
+    }
+    requestAnimationFrame(drawSnow);
+  }
+
+  neonText.addEventListener('click', () => {
+    explosionSound.currentTime = 0;
+    explosionSound.play();
+
+    if (isFirstClick) {
+      neonText.style.opacity = 0;
+      document.body.style.background = "#000000";
+      neonText.textContent = "مش قولتلك؟";
+      setTimeout(() => {
+        neonText.style.opacity = 1;
+        document.body.style.background = 'radial-gradient(ellipse at center, var(--secondary-bg-color) 0%, var(--main-bg-color) 100%)';
+        isFirstClick = false;
+        displayNextText();
+      }, 2000);
+      return;
+    }
+
+    displayNextText();
+  });
+
+  function displayNextText() {
+    let shakeCount = 0;
+    const shakeInterval = setInterval(() => {
+      neonText.style.transform = `translate(${Math.random() * 8 - 4}px, ${Math.random() * 4 - 2}px)`;
+      shakeCount++;
+      if (shakeCount > 10) {
+        clearInterval(shakeInterval);
+        neonText.style.transform = "translate(0, 0)";
+      }
+    }, 40);
+
+    neonText.style.opacity = 0;
+    setTimeout(() => {
+      // بعد "مش قولتلك؟" يتم عرض أول نص من المصفوفة
+      if (currentStep < texts.length) {
+        neonText.textContent = texts[currentStep];
+        neonText.style.textShadow = "var(--text-shadow-strong)";
+        setTimeout(() => { neonText.style.textShadow = "var(--text-shadow-initial)"; }, 700);
+        currentStep++;
+      } else {
+        // إذا انتهت كل النصوص، نعود لأول نص في القائمة مرة أخرى
+        neonText.textContent = texts[0];
+        currentStep = 1;
+      }
+      neonText.style.opacity = 1;
+    }, 500);
+  }
+
+
+  function init() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    createFlakes();
+    drawSnow();
+  }
+  
+  window.addEventListener('load', init);
+  window.addEventListener('resize', init);
 </script>
 </body>
 </html>
