@@ -7,14 +7,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --main-bg-color: #000010;
-    --secondary-bg-color: #0b0c1a;
-    --neon-glow-color-1: #ffffff; /* أبيض نقي لإشراق أفضل */
-    --neon-glow-color-2: #ff9900; /* برتقالي ساطع */
-    --button-color: #e65100; /* برتقالي أغمق قليلاً */
-    --button-hover-color: #ff6e2a; /* برتقالي فاتح عند التحويم */
-    --text-shadow-strong: 0 0 20px var(--neon-glow-color-1), 0 0 40px var(--neon-glow-color-2), 0 0 60px var(--button-color);
-    --text-shadow-initial: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 20px rgba(255, 150, 100, 0.7), 0 0 30px rgba(255, 100, 0, 0.5);
+    --main-bg-color: #0c0c0c; /* خلفية سوداء شبه كاملة */
+    --secondary-bg-color: #1a1a1a; /* لون رمادي داكن للخلفية */
+    --text-color: #a0a0a0; /* لون رمادي باهت للنص */
+    --hover-color: #ffffff; /* لون أبيض خافت عند التحويم */
+    --button-color: #333333; /* لون زر رمادي داكن */
+    --button-hover-color: #555555; /* لون زر رمادي أفتح عند التحويم */
   }
   
   body {
@@ -39,58 +37,52 @@
     z-index: -2;
   }
   
-  .neon-text {
-    font-size: clamp(35px, 9vw, 65px); /* حجم خط أكبر وأكثر تجاوبًا */
-    font-weight: 800; /* وزن خط أثقل */
+  .dark-text {
+    font-size: clamp(30px, 7vw, 55px);
+    font-weight: 800;
     text-align: center;
     line-height: 1.4;
-    background: linear-gradient(90deg, var(--neon-glow-color-1), var(--neon-glow-color-2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: neonGlow 2s infinite alternate;
+    color: var(--text-color);
+    animation: fade 4s infinite alternate; /* تأثير تلاشي بدلاً من النيون */
     cursor: pointer;
     position: relative;
-    transition: transform 0.3s ease, opacity 0.5s ease, text-shadow 0.3s ease; /* زيادة سلاسة انتقال الأوباسيتي */
+    transition: transform 0.3s ease, opacity 0.5s ease;
     z-index: 1;
     user-select: none;
-    text-shadow: var(--text-shadow-initial); /* تطبيق تأثير الظل الأولي */
   }
   
-  @keyframes neonGlow {
-    0% {text-shadow: var(--text-shadow-initial);}
-    50% {text-shadow: var(--text-shadow-strong);} /* ظل أقوى في المنتصف */
-    100% {text-shadow: var(--text-shadow-initial);}
+  @keyframes fade {
+    0% {color: #7a7a7a;}
+    100% {color: #c0c0c0;}
   }
   
   #discordButton {
     position: fixed;
-    top: 25px; /* رفع الزر قليلاً */
-    right: 25px; /* تحريك الزر لليمين قليلاً */
+    top: 20px;
+    right: 20px;
     background-color: var(--button-color);
-    color: white;
+    color: var(--text-color);
     border: none;
-    padding: 18px 35px; /* تصغير حجم الزر قليلاً */
-    font-size: 20px; /* تصغير حجم الخط */
+    padding: 15px 30px;
+    font-size: 18px;
     cursor: pointer;
-    border-radius: 10px; /* تصغير نصف قطر الزوايا قليلاً */
+    border-radius: 8px;
     z-index: 1000;
-    animation: buttonShake 2s infinite;
-    box-shadow: 0 0 12px var(--button-color); /* ظل أخف قليلاً */
+    animation: buttonFade 2s infinite;
+    box-shadow: 0 0 5px var(--button-color);
     transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
   }
   
   #discordButton:hover {
     background-color: var(--button-hover-color);
-    box-shadow: 0 0 20px var(--button-hover-color); /* ظل أقوى عند التحويم */
-    transform: scale(1.08); /* تكبير أكثر قليلاً عند التحويم */
+    box-shadow: 0 0 10px var(--button-hover-color);
+    transform: scale(1.05);
   }
   
-  @keyframes buttonShake {
-    0% { transform: translate(0, 0); }
-    25% { transform: translate(2px, -2px); } /* اهتزاز أقل حدة */
-    50% { transform: translate(-2px, 2px); }
-    75% { transform: translate(2px, 2px); }
-    100% { transform: translate(0, 0); }
+  @keyframes buttonFade {
+    0% {opacity: 0.7;}
+    50% {opacity: 1;}
+    100% {opacity: 0.7;}
   }
 </style>
 </head>
@@ -99,8 +91,8 @@
 <button id="discordButton" onclick="window.open('https://discordapp.com/users/1314245472428494968', '_blank')">Abdo Acc</button>
 
 <canvas id="snowCanvas"></canvas>
-<div class="neon-text" id="neonText">آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور</div>
-<audio id="explosionSound" preload="auto" src="https://cdn.pixabay.com/audio/2022/02/08/audio_f52361667b.mp3"></audio>
+<div class="dark-text" id="neonText">آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور</div>
+<audio id="explosionSound" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-small-bomb-explosion-2849.mp3"></audio>
 
 <script>
   const canvas = document.getElementById('snowCanvas');
@@ -109,6 +101,7 @@
   const neonText = document.getElementById('neonText');
   const explosionSound = document.getElementById('explosionSound');
 
+  const initialText = "آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور";
   const texts = [
     "الأندآل ، في عين بعض جدع ـآن",
     "الدم لا يُغسل إلا بالدم",
@@ -116,7 +109,7 @@
     "نُحن الذنوب ، التي لا تغفر"
   ];
   
-  let currentStep = 0;
+  let currentTextIndex = 0;
   let isFirstClick = true;
 
   const snowSettings = {
@@ -192,16 +185,15 @@
 
     neonText.style.opacity = 0;
     setTimeout(() => {
-      // بعد "مش قولتلك؟" يتم عرض أول نص من المصفوفة
-      if (currentStep < texts.length) {
-        neonText.textContent = texts[currentStep];
-        neonText.style.textShadow = "var(--text-shadow-strong)";
-        setTimeout(() => { neonText.style.textShadow = "var(--text-shadow-initial)"; }, 700);
-        currentStep++;
+      if (currentTextIndex < texts.length) {
+        neonText.textContent = texts[currentTextIndex];
+        neonText.style.color = 'var(--hover-color)';
+        setTimeout(() => { neonText.style.color = 'var(--text-color)'; }, 700);
+        currentTextIndex++;
       } else {
-        // إذا انتهت كل النصوص، نعود لأول نص في القائمة مرة أخرى
-        neonText.textContent = texts[0];
-        currentStep = 1;
+        neonText.textContent = initialText;
+        currentTextIndex = 0;
+        isFirstClick = true;
       }
       neonText.style.opacity = 1;
     }, 500);
