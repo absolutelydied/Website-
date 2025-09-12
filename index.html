@@ -92,7 +92,7 @@
 
 <canvas id="snowCanvas"></canvas>
 <div class="dark-text" id="neonText">آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور</div>
-<audio id="explosionSound" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-cinematic-bomb-explosion-2490.mp3"></audio>
+<audio id="explosionSound" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-heavy-bomb-explosion-2442.mp3"></audio>
 
 <script>
   const canvas = document.getElementById('snowCanvas');
@@ -110,7 +110,6 @@
   ];
   
   let currentTextIndex = 0;
-  let isFirstClick = true;
 
   const snowSettings = {
     count: 500,
@@ -152,25 +151,22 @@
     requestAnimationFrame(drawSnow);
   }
 
-  neonText.addEventListener('click', () => {
-    explosionSound.currentTime = 0;
-    explosionSound.play();
-
-    if (isFirstClick) {
+  function startSequence() {
+    // تم تغيير مدة التأخير هنا إلى 3000ms (ثلاث ثواني)
+    setTimeout(() => {
       neonText.style.opacity = 0;
       document.body.style.background = "#000000";
       neonText.textContent = "مش قولتلك؟";
+      explosionSound.currentTime = 0;
+      explosionSound.play();
+      
       setTimeout(() => {
-        neonText.style.opacity = 1;
-        document.body.style.background = 'radial-gradient(ellipse at center, var(--secondary-bg-color) 0%, var(--main-bg-color) 100%)';
-        isFirstClick = false;
-        setTimeout(displayNextText, 500); 
+        neonText.style.opacity = 0;
+        setTimeout(displayNextText, 3000); 
       }, 500);
-      return;
-    }
 
-    displayNextText();
-  });
+    }, 3000); // 3 ثواني انتظار مبدئي
+  }
 
   function displayNextText() {
     let shakeCount = 0;
@@ -185,17 +181,26 @@
 
     neonText.style.opacity = 0;
     setTimeout(() => {
+      document.body.style.background = 'radial-gradient(ellipse at center, var(--secondary-bg-color) 0%, var(--main-bg-color) 100%)';
+      
       if (currentTextIndex < texts.length) {
         neonText.textContent = texts[currentTextIndex];
-        neonText.style.color = 'var(--hover-color)';
-        setTimeout(() => { neonText.style.color = 'var(--text-color)'; }, 700);
-        currentTextIndex++;
+        neonText.style.opacity = 1;
+        setTimeout(() => {
+          if (currentTextIndex >= texts.length) {
+            currentTextIndex = 0;
+            neonText.textContent = initialText;
+            startSequence();
+          } else {
+            setTimeout(displayNextText, 4000);
+          }
+        }, 4000);
       } else {
         neonText.textContent = initialText;
         currentTextIndex = 0;
-        isFirstClick = true;
+        setTimeout(startSequence, 4000);
       }
-      neonText.style.opacity = 1;
+      
     }, 500);
   }
 
@@ -205,6 +210,7 @@
     canvas.height = window.innerHeight;
     createFlakes();
     drawSnow();
+    startSequence();
   }
   
   window.addEventListener('load', init);
