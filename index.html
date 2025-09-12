@@ -163,9 +163,11 @@
       
       setTimeout(() => {
         neonText.style.opacity = 0;
-        // تم تغيير مدة التأخير هنا إلى 3000ms (ثلاث ثواني)
-        setTimeout(displayNextText, 2500); 
-      }, 500);
+        document.body.style.background = 'radial-gradient(ellipse at center, var(--secondary-bg-color) 0%, var(--main-bg-color) 100%)';
+        isFirstClick = false;
+        // الانتقال الفوري للنص التالي
+        displayNextText(); 
+      }, 500); // عرض "مش قولتلك؟" لمدة نصف ثانية فقط
       return;
     }
 
@@ -185,8 +187,6 @@
 
     neonText.style.opacity = 0;
     setTimeout(() => {
-      document.body.style.background = 'radial-gradient(ellipse at center, var(--secondary-bg-color) 0%, var(--main-bg-color) 100%)';
-      
       if (currentTextIndex < texts.length) {
         neonText.textContent = texts[currentTextIndex];
         neonText.style.color = 'var(--hover-color)';
