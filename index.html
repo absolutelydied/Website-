@@ -2,8 +2,8 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>Abdo</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
+<title>الموقع السينمائي النهائي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@800&display=swap" rel="stylesheet">
 <style>
 body {
   margin:0;
@@ -26,8 +26,8 @@ body {
   z-index:-2;
 }
 .neon-text {
-  font-size:60px;
-  font-weight:700;
+  font-size:80px;
+  font-weight:800;
   text-align:center;
   line-height:1.4;
   background:linear-gradient(90deg,#fff,#f5a623);
@@ -51,10 +51,10 @@ body {
   background-color:#ff4e00;
   color:white;
   border:none;
-  padding:20px 30px;
-  font-size:20px;
+  padding:30px 50px;
+  font-size:26px;
   cursor:pointer;
-  border-radius:8px;
+  border-radius:12px;
   z-index:1000;
   animation: buttonShake 2s infinite;
 }
@@ -63,9 +63,9 @@ body {
 }
 @keyframes buttonShake {
   0% {transform: translate(0,0);}
-  25% {transform: translate(2px,-2px);}
-  50% {transform: translate(-2px,2px);}
-  75% {transform: translate(2px,2px);}
+  25% {transform: translate(3px,-3px);}
+  50% {transform: translate(-3px,3px);}
+  75% {transform: translate(3px,3px);}
   100% {transform: translate(0,0);}
 }
 </style>
@@ -77,7 +77,7 @@ body {
 <canvas id="snowCanvas"></canvas>
 <div class="neon-text" id="neonText">آلضلمة الي فـ عالمنآ قادرة تبلع اي نـور</div>
 <audio id="explosionSound" preload="auto">
-  <source src="https://www.soundjay.com/explosion/sounds/explosion-01.mp3" type="audio/mpeg">
+  <source src="https://cdn.pixabay.com/download/audio/2025/05/26/audio_346115.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -85,13 +85,13 @@ const canvas=document.getElementById('snowCanvas'), ctx=canvas.getContext('2d');
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 
-let flakesCount=600, flakes=[];
+let flakesCount=700, flakes=[];
 for(let i=0;i<flakesCount;i++){
   flakes.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, radius:Math.random()*4+1, speed:Math.random()*2+1, opacity:Math.random()*0.8+0.2})
 }
 
 const neonText=document.getElementById('neonText'), explosionSound=document.getElementById('explosionSound');
-const texts=["الأندآل ، في عين بعض جدع ـآن","الدم لا يُغسل إلا بالدم","السقوط مش عجز ، ده بداية مشوار","نُحن الذنوب الذي لا تغفر"];
+const texts=["الأندآل ، في عين بعض جدع ـآن","الدم لا يُغسل إلا بالدم","السقوط مش عجز ، ده بداية مشوار","نُحن الذنوب التي لا تغفر"];
 let currentStep=0, firstClick=true;
 
 function drawScene(){
@@ -117,7 +117,6 @@ neonText.addEventListener('click', ()=>{
   explosionSound.play();
 
   if(firstClick){
-    // تمتص الضوء وتحول الشاشة سوداء
     neonText.style.opacity=0;
     document.body.style.background="#000000";
     const originalText = neonText.textContent;
@@ -130,10 +129,10 @@ neonText.addEventListener('click', ()=>{
     },2000);
   }
 
-  // اهتزاز النص
+  // اهتزاز النص بدون ميل
   let shakeCount=0;
   const shakeInterval=setInterval(()=>{
-    neonText.style.transform=`translate(${Math.random()*20-10}px,${Math.random()*10-5}px) rotate(${Math.random()*10-5}deg)`;
+    neonText.style.transform=`translate(${Math.random()*20-10}px,${Math.random()*10-5}px)`;
     shakeCount++;
     if(shakeCount>15) clearInterval(shakeInterval);
   },50);
@@ -142,7 +141,7 @@ neonText.addEventListener('click', ()=>{
   neonText.style.opacity=0;
   setTimeout(()=>{
     neonText.style.opacity=1;
-    neonText.style.transform="translate(0,0) rotate(0deg)";
+    neonText.style.transform="translate(0,0)";
     if(currentStep<texts.length){
       neonText.textContent=texts[currentStep];
       neonText.style.textShadow="0 0 25px #fff,0 0 50px #ff6e2a,0 0 75px #ff4e00";
