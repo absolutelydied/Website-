@@ -9,7 +9,7 @@
   :root {
     --main-bg-color: #0c0c0c;
     --secondary-bg-color: #1a1a1a;
-    --text-color: #a0a0a0;
+    --text-color: #c0c0c0; /* تم تغيير لون الخط هنا */
     --hover-color: #ffffff;
     --button-color: #333333;
     --button-hover-color: #555555;
@@ -106,7 +106,22 @@
     "الأندآل ، في عين بعض جدع ـآن",
     "الدم لا يُغسل إلا بالدم",
     "السقوط مش عجز ، ده بداية مشوار",
-    "نُحن الذنوب ، التي لا تغفر"
+    "نُحن الذنوب ، التي لا تغفر",
+    "لا مُحال ان لا مثيل لي علي اَي حال",
+    "صاحبك لو خان، الزمن هيعلّمك الإيمان",
+    "فآࢪقلي",
+    "تآلمت ڪثيرا بـسببك ولم ﭑ‏؏ـد ﭑشـ‏؏ـر",
+    "حُب هآن صَآحب خآن دُنيآ ملهآش ام ـآن",
+    "بلح ـس شفآيف آلـ سيجـآرة",
+    "آنآ هوآ آلـفتي آلرآئع",
+    "عـجلة آلدنيآ داࢪت ، وآنآ آلـمختآر",
+    "فين وُعودک يـ جآحد عهُودک",
+    "آنآ آلـ مُشتآق وآنت آلـ غآئب ، آنت آلـ متمسک وآنآ آلـ سآيب",
+    "يآ آعيش الدنيآآ زي م آنآ عاوز ، يآ آمآ مش هعيشکک يـ دنيآآ",
+    "Fourty of my kindred died",
+    "Calm mind",
+    "strong spirit",
+    "loyal heart"
   ];
   
   let currentTextIndex = 0;
@@ -165,9 +180,8 @@
         neonText.style.opacity = 0;
         document.body.style.background = 'radial-gradient(ellipse at center, var(--secondary-bg-color) 0%, var(--main-bg-color) 100%)';
         isFirstClick = false;
-        // الانتقال الفوري للنص التالي
         displayNextText(); 
-      }, 500); // عرض "مش قولتلك؟" لمدة نصف ثانية فقط
+      }, 500); 
       return;
     }
 
@@ -200,7 +214,6 @@
       neonText.style.opacity = 1;
     }, 500);
   }
-
 
   function init() {
     canvas.width = window.innerWidth;
